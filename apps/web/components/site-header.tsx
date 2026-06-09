@@ -10,7 +10,8 @@ const links = [
   { href: "/jobs", label: "Jobs" },
   { href: "/community", label: "Community" },
   { href: "/alumni", label: "Alumni" },
-  { href: "/mentorship", label: "Mentorship" }
+  { href: "/mentorship", label: "Mentorship" },
+  { href: "/notifications", label: "Notifications" }
 ];
 
 export function SiteHeader() {

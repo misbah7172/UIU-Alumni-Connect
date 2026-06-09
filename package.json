@@ -11,8 +11,9 @@
     "lint": "npm run lint --workspaces",
     "typecheck": "npm run typecheck --workspaces",
     "test": "jest --runInBand",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev"
+    "prisma:generate": "dotenv -e .env.local -e .env -- prisma generate",
+    "prisma:migrate": "dotenv -e .env.local -e .env -- prisma migrate dev",
+    "prisma:push": "dotenv -e .env.local -e .env -- prisma db push"
   },
   "workspaces": [
     "apps/*",
@@ -20,6 +21,7 @@
   ],
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "dotenv-cli": "^11.0.0",
     "jest": "^30.4.2",
     "prisma": "^5.22.0",
     "ts-jest": "^29.4.11",

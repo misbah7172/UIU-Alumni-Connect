@@ -15,6 +15,7 @@ const nav = [
   { href: "/jobs", label: "Jobs", icon: BookOpenCheck },
   { href: "/community", label: "Q&A", icon: MessageSquareText },
   { href: "/alumni", label: "Directory", icon: Users },
+  { href: "/notifications", label: "Notifications", icon: Bell },
   { href: "/admin", label: "Admin", icon: ShieldCheck }
 ];
 
@@ -46,9 +47,9 @@ export function DashboardShell({ children, title }: { children: React.ReactNode;
             <div className="flex h-16 items-center justify-between px-4 sm:px-6">
               <h1 className="text-lg font-bold sm:text-xl">{title}</h1>
               <div className="flex items-center gap-3">
-                <button className="rounded-md border border-border bg-card p-2 text-muted-foreground transition hover:text-foreground">
+                <Link href="/notifications" className="rounded-md border border-border bg-card p-2 text-muted-foreground transition hover:text-foreground">
                   <Bell size={18} />
-                </button>
+                </Link>
                 <div className="h-9 w-9 rounded-full bg-primary text-primary-foreground grid place-items-center text-sm font-bold">
                   U
                 </div>

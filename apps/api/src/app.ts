@@ -4,6 +4,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import morgan from "morgan";
 import { env } from "./config/env.js";
+import { prisma } from "./config/prisma.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { apiRouter } from "./routes/index.js";
 
@@ -25,6 +26,15 @@ export function createApp() {
 
   app.get("/health", (_req, res) => {
     res.json({ status: "ok", service: "uiu-alumni-api" });
+  });
+
+  app.get("/health/db", async (_req, res, next) => {
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      res.json({ status: "ok", database: "connected" });
+    } catch (error) {
+      next(error);
+    }
   });
 
   app.use("/api", apiRouter);

@@ -33,19 +33,31 @@ npm install
 cp .env.example .env
 ```
 
+For Supabase, set both `DATABASE_URL` and `DIRECT_URL` to the project pooler URL with the real database password:
+
+```bash
+postgresql://postgres.ftsepzfndwsjhlbfvbfr:YOUR_DATABASE_PASSWORD@aws-1-ap-northeast-2.pooler.supabase.com:5432/postgres
+```
+
 3. Generate Prisma client:
 
 ```bash
 npm run prisma:generate
 ```
 
-4. Run the web app:
+4. Push the schema to the configured database:
+
+```bash
+npm run prisma:migrate -- --name init
+```
+
+5. Run the web app:
 
 ```bash
 npm run dev:web
 ```
 
-5. Run the API:
+6. Run the API:
 
 ```bash
 npm run dev:api
