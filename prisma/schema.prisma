@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  STUDENT
+  ALUMNI
+  ADMIN
+  RECRUITER
+}
+
+enum EmploymentType {
+  INTERNSHIP
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum NotificationType {
+  NEW_ANSWER
+  REFERRAL_ACCEPTED
+  MENTORSHIP_REQUEST
+  JOB_MATCH
+  PROFILE_VIEWED
+  SYSTEM
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  role               Role                @default(STUDENT)
+  name               String
+  email              String              @unique
+  department         String?
+  batch              String?
+  profileImage       String?
+  bio                String?
+  githubUrl          String?
+  linkedinUrl        String?
+  skills             String[]            @default([])
+  verified           Boolean             @default(false)
+  reputationPoints   Int                 @default(0)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  studentProfile     StudentProfile?
+  alumniProfile      AlumniProfile?
+  jobs               Job[]               @relation("AlumniJobs")
+  questions          Question[]
+  answers            Answer[]
+  referralRequests   Referral[]          @relation("StudentReferrals")
+  referralResponses  Referral[]          @relation("AlumniReferrals")
+  mentorSessions     MentorshipSession[] @relation("MentorSessions")
+  studentSessions    MentorshipSession[] @relation("StudentSessions")
+  notifications      Notification[]
+  reports            Report[]            @relation("Reporter")
+}
+
+model StudentProfile {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  cgpa         Decimal? @db.Decimal(3, 2)
+  resumeUrl    String?
+  portfolioUrl String?
+  interests    String[] @default([])
+  projects     Json?
+  certifications Json?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AlumniProfile {
+  id                  String  @id @default(uuid())
+  userId              String  @unique
+  company             String?
+  position            String?
+  experienceYears     Int?
+  mentorshipAvailable Boolean @default(false)
+  careerJourney       Json?
+  user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Job {
+  id                String         @id @default(uuid())
+  alumniId          String
+  companyName       String
+  jobTitle          String
+  description       String
+  requiredSkills    String[]       @default([])
+  salaryRange       String?
+  location          String
+  employmentType    EmploymentType
+  applyLink         String?
+  referralAvailable Boolean        @default(false)
+  deadline          DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  alumni            User           @relation("AlumniJobs", fields: [alumniId], references: [id], onDelete: Cascade)
+  referrals         Referral[]
+
+  @@index([alumniId])
+  @@index([employmentType, deadline])
+}
+
+model Question {
+  id        String   @id @default(uuid())
+  studentId String
+  title     String
+  body      String
+  tags      String[] @default([])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  student   User     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  answers   Answer[]
+
+  @@index([studentId])
+}
+
+model Answer {
+  id         String   @id @default(uuid())
+  questionId String
+  userId     String
+  answerBody String
+  upvotes    Int      @default(0)
+  accepted   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([userId])
+}
+
+model Referral {
+  id        String        @id @default(uuid())
+  studentId String
+  alumniId  String
+  jobId     String
+  status    RequestStatus @default(PENDING)
+  message   String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  student   User          @relation("StudentReferrals", fields: [studentId], references: [id], onDelete: Cascade)
+  alumni    User          @relation("AlumniReferrals", fields: [alumniId], references: [id], onDelete: Cascade)
+  job       Job           @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([studentId, status])
+  @@index([alumniId, status])
+}
+
+model MentorshipSession {
+  id          String        @id @default(uuid())
+  mentorId    String
+  studentId   String
+  status      RequestStatus @default(PENDING)
+  meetingTime DateTime
+  meetingLink String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  mentor      User          @relation("MentorSessions", fields: [mentorId], references: [id], onDelete: Cascade)
+  student     User          @relation("StudentSessions", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@index([mentorId, status])
+  @@index([studentId, status])
+}
+
+model Notification {
+  id         String           @id @default(uuid())
+  userId     String
+  type       NotificationType
+  message    String
+  readStatus Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readStatus])
+}
+
+model Report {
+  id         String   @id @default(uuid())
+  reportedBy String
+  targetId   String
+  reason     String
+  resolved   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  reporter   User     @relation("Reporter", fields: [reportedBy], references: [id], onDelete: Cascade)
+
+  @@index([reportedBy])
+  @@index([targetId])
+}

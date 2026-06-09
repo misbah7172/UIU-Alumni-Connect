@@ -1,0 +1,576 @@
+# Build a Full Alumni Community & Career Networking Platform
+
+You are a senior full-stack software architect and AI coding agent.
+
+Your task is to design and develop a production-ready web platform called:
+
+# “UIU Alumni Connect”
+
+A modern alumni-student networking platform for university communities where alumni can post jobs, mentor students, answer questions, and provide referrals.
+
+The platform must be scalable, secure, modular, responsive, and designed using modern industry standards.
+
+---
+
+# Primary Goal
+
+Create a professional platform where:
+
+* Alumni can post jobs, internships, referrals, mentorship opportunities, and answer student questions.
+* Students can create profiles, ask career questions, apply to jobs, request referrals, and connect with alumni.
+* Admins can verify users and moderate the platform.
+
+The platform should function like a combination of:
+
+* LinkedIn
+* Stack Overflow
+* Reddit
+* University Alumni Portal
+
+---
+
+# Tech Stack
+
+## Frontend
+
+* Next.js (latest stable version)
+* TypeScript
+* Tailwind CSS
+* ShadCN UI
+* Zustand (state management)
+* TanStack Query
+* React Hook Form
+* Zod validation
+
+## Backend
+
+* Express.js
+* TypeScript
+* JWT Authentication
+* REST API architecture
+* Role-based access control (RBAC)
+
+## Database & Backend Services
+
+* Supabase PostgreSQL
+* Supabase Auth
+* Supabase Storage
+* Supabase Realtime
+
+## ORM
+
+* Prisma ORM
+
+---
+
+# System Architecture
+
+Use clean architecture principles.
+
+Structure backend with:
+
+* Controllers
+* Services
+* Routes
+* Middleware
+* Utilities
+* Validation
+* Database layer
+
+Frontend structure:
+
+* app/
+* components/
+* hooks/
+* services/
+* store/
+* lib/
+* types/
+* features/
+
+Use modular and scalable folder structure.
+
+---
+
+# User Roles
+
+## 1. Student
+
+Capabilities:
+
+* Register/login
+* Create profile
+* Upload CV
+* Add skills/projects
+* Ask questions
+* Apply to jobs
+* Request referrals
+* Follow alumni
+* Receive notifications
+
+## 2. Alumni
+
+Capabilities:
+
+* Verified alumni badge
+* Post jobs/internships
+* Offer mentorship
+* Answer questions
+* Review student profiles
+* Accept/reject referral requests
+
+## 3. Admin
+
+Capabilities:
+
+* Verify alumni
+* Moderate content
+* Remove spam
+* Ban users
+* Manage reports
+* View analytics dashboard
+
+## 4. Recruiter (Optional)
+
+Capabilities:
+
+* Post external jobs
+* Search student profiles
+
+---
+
+# Authentication System
+
+Use Supabase Auth.
+
+Features:
+
+* Email/password authentication
+* JWT authentication
+* Email verification
+* Password reset
+* Role-based authentication
+* Session persistence
+* Protected routes
+
+---
+
+# Database Design
+
+Create optimized PostgreSQL schema.
+
+Required tables:
+
+## users
+
+Fields:
+
+* id
+* role
+* name
+* email
+* department
+* batch
+* profile_image
+* bio
+* github_url
+* linkedin_url
+* skills
+* verified
+* created_at
+
+## student_profiles
+
+* user_id
+* cgpa
+* resume_url
+* portfolio_url
+* interests
+
+## alumni_profiles
+
+* user_id
+* company
+* position
+* experience_years
+* mentorship_available
+
+## jobs
+
+* id
+* alumni_id
+* company_name
+* job_title
+* description
+* required_skills
+* salary_range
+* location
+* employment_type
+* apply_link
+* referral_available
+* deadline
+* created_at
+
+## questions
+
+* id
+* student_id
+* title
+* body
+* tags
+* created_at
+
+## answers
+
+* id
+* question_id
+* user_id
+* answer_body
+* upvotes
+* created_at
+
+## referrals
+
+* id
+* student_id
+* alumni_id
+* job_id
+* status
+* message
+* created_at
+
+## mentorship_sessions
+
+* id
+* mentor_id
+* student_id
+* status
+* meeting_time
+
+## notifications
+
+* id
+* user_id
+* type
+* message
+* read_status
+
+## reports
+
+* id
+* reported_by
+* target_id
+* reason
+
+---
+
+# Core Features
+
+## 1. Professional User Profiles
+
+Student profiles should include:
+
+* Skills
+* Projects
+* Resume upload
+* GitHub
+* LinkedIn
+* Portfolio
+* Education
+* Certifications
+
+Alumni profiles should include:
+
+* Company
+* Position
+* Career journey
+* Mentorship availability
+
+---
+
+# 2. Job Board
+
+Features:
+
+* Create/edit/delete jobs
+* Job filtering
+* Search jobs
+* Bookmark jobs
+* Internship/full-time categories
+* Remote/on-site/hybrid
+* Skill tags
+* Deadline tracking
+
+---
+
+# 3. Q&A Community
+
+Features:
+
+* Ask questions
+* Answer questions
+* Upvote/downvote
+* Best answer selection
+* Tags/categories
+* Search functionality
+
+Categories:
+
+* Career
+* Internship
+* Research
+* Higher Studies
+* Interview Preparation
+* Resume Review
+
+---
+
+# 4. Referral System
+
+Features:
+
+* Request referrals
+* Accept/reject referrals
+* Referral status tracking
+* Messaging system
+
+---
+
+# 5. Mentorship System
+
+Features:
+
+* Mentor listing
+* Session booking
+* Availability status
+* Video meeting link support
+* Session history
+
+---
+
+# 6. Real-Time Features
+
+Use Supabase realtime.
+
+Implement:
+
+* Live notifications
+* Realtime chat
+* Typing indicators
+* New job alerts
+* Live Q&A updates
+
+---
+
+# 7. Notification System
+
+Notification types:
+
+* New answer
+* Referral accepted
+* New mentorship request
+* New job matching skills
+* Profile viewed
+
+---
+
+# 8. Search & Recommendation System
+
+Implement:
+
+* Search alumni
+* Search jobs
+* Search questions
+* Skill-based recommendations
+* Suggested mentors
+
+---
+
+# 9. Gamification
+
+Add:
+
+* Reputation points
+* Achievement badges
+* Top contributor leaderboard
+
+Badges:
+
+* Top Mentor
+* Active Alumni
+* Career Helper
+* Community Leader
+
+---
+
+# UI/UX Requirements
+
+Design requirements:
+
+* Modern professional UI
+* Mobile responsive
+* Dark/light mode
+* Clean dashboard
+* Fast loading
+* Accessibility support
+
+Pages required:
+
+* Landing page
+* Login/Register
+* Dashboard
+* Job board
+* Alumni directory
+* Q&A page
+* Mentorship page
+* Profile page
+* Admin dashboard
+* Notifications page
+
+---
+
+# Security Requirements
+
+Implement:
+
+* Role-based access control
+* Row Level Security (RLS)
+* Rate limiting
+* Input sanitization
+* XSS protection
+* SQL injection prevention
+* File upload validation
+* Secure JWT handling
+
+Use:
+
+* Helmet.js
+* Zod validation
+* Environment variables
+
+---
+
+# API Requirements
+
+Create REST APIs for:
+
+* Authentication
+* Users
+* Jobs
+* Questions
+* Answers
+* Referrals
+* Mentorship
+* Notifications
+
+Follow:
+
+* REST best practices
+* Proper status codes
+* Error handling
+* Pagination
+* Validation middleware
+
+---
+
+# Performance Optimization
+
+Implement:
+
+* Lazy loading
+* Image optimization
+* Pagination
+* Query caching
+* Debounced search
+* Optimized database indexing
+
+---
+
+# AI Features (Future Ready)
+
+Prepare architecture for future AI integrations.
+
+Future AI modules:
+
+* AI resume analyzer
+* AI career assistant chatbot
+* Skill matching system
+* Smart job recommendation engine
+* AI interview preparation assistant
+
+Design APIs and schema to support future ML integrations.
+
+---
+
+# Deployment Requirements
+
+Frontend:
+
+* Vercel deployment
+
+Backend:
+
+* Railway/Render/Docker deployment
+
+Database:
+
+* Supabase cloud
+
+Include:
+
+* Docker support
+* Environment configuration
+* CI/CD readiness
+
+---
+
+# Deliverables
+
+Generate:
+
+1. Full project architecture
+2. Folder structure
+3. Database schema
+4. Prisma models
+5. Backend APIs
+6. Frontend pages/components
+7. Authentication flow
+8. Realtime implementation
+9. Admin dashboard
+10. Responsive UI
+11. Deployment instructions
+12. Security implementation
+13. API documentation
+
+---
+
+# Coding Standards
+
+Requirements:
+
+* Type-safe code
+* Reusable components
+* Clean code principles
+* Proper comments
+* Modular architecture
+* Scalable structure
+* Production-ready quality
+
+---
+
+# Important Notes
+
+* Use latest stable package versions.
+* Use TypeScript everywhere.
+* Do not use mock data unless necessary.
+* Prioritize scalability and maintainability.
+* Follow enterprise-level architecture.
+* Make the UI modern and professional.
+* Optimize for performance and security.
+* Ensure mobile responsiveness.
+
+---
+
+# Final Goal
+
+Build a complete university alumni networking ecosystem that can later scale into a multi-university SaaS platform.
