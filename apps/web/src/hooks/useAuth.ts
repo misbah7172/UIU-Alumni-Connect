@@ -2,7 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import { post } from "@/lib/api";
 import { firebaseAuth, googleProvider } from "@/lib/firebase";
 import { useAuthStore } from "@/store/authStore";
-import { signInWithPopup, signOut } from "firebase/auth";
+import { getRedirectResult, signInWithRedirect, signOut } from "firebase/auth";
 
 const allowedDomain = "uiu.ac.bd";
 
@@ -16,19 +16,39 @@ export function useGoogleLogin() {
   return useMutation({
     mutationFn: async () => {
       setLoading(true);
-      const credential = await signInWithPopup(firebaseAuth, googleProvider);
-      const email = credential.user.email;
+      await signInWithRedirect(firebaseAuth, googleProvider);
+    },
+    onError: () => {
+      setLoading(false);
+    }
+  });
+}
 
+export function useGoogleRedirectResult() {
+  const { setUser, setToken, setLoading } = useAuthStore();
+
+  return useMutation({
+    mutationFn: async () => {
+      setLoading(true);
+      const credential = await getRedirectResult(firebaseAuth);
+      if (!credential) return null;
+
+      const email = credential.user.email;
       if (!isAllowedEmail(email)) {
         await signOut(firebaseAuth);
         throw new Error(`Only Google accounts ending with .${allowedDomain} are allowed.`);
       }
 
-      const idToken = await credential.user.getIdToken();
-      const data = await post("/auth/firebase/google", { idToken });
-      return data;
+      return post("/auth/firebase/google", {
+        idToken: await credential.user.getIdToken()
+      });
     },
     onSuccess: (data) => {
+      if (!data) {
+        setLoading(false);
+        return;
+      }
+
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem("token", data.token);

@@ -5,28 +5,49 @@ import { useRouter } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useGoogleLogin } from "@/hooks/useAuth";
-import { useState } from "react";
+import { useGoogleLogin, useGoogleRedirectResult } from "@/hooks/useAuth";
+import { useEffect, useState } from "react";
 
 export function AuthPanel({ mode }: { mode: "login" | "register" | "forgot" }) {
   const isRegister = mode === "register";
   const isForgot = mode === "forgot";
   const router = useRouter();
   const googleLogin = useGoogleLogin();
+  const redirectResult = useGoogleRedirectResult();
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    let mounted = true;
+
+    redirectResult
+      .mutateAsync()
+      .then((data) => {
+        if (mounted && data) {
+          router.push("/dashboard");
+        }
+      })
+      .catch((err: any) => {
+        if (mounted) {
+          setError(err.message || "Google sign-in failed");
+        }
+      });
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleGoogleLogin = async () => {
     setError("");
 
     try {
       await googleLogin.mutateAsync();
-      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "An error occurred");
     }
   };
 
-  const isLoading = googleLogin.isPending;
+  const isLoading = googleLogin.isPending || redirectResult.isPending;
 
   return (
     <main className="grid min-h-screen place-items-center bg-background px-4 py-10">
