@@ -20,6 +20,12 @@ services:
         sync: false
       - key: SUPABASE_SERVICE_ROLE_KEY
         sync: false
+      - key: FIREBASE_PROJECT_ID
+        value: uiu-adda-k
+      - key: FIREBASE_CLIENT_EMAIL
+        sync: false
+      - key: FIREBASE_PRIVATE_KEY
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       - key: WEB_ORIGIN
@@ -30,3 +36,19 @@ services:
         sync: false
       - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
         sync: false
+      - key: NEXT_PUBLIC_FIREBASE_API_KEY
+        value: AIzaSyA9TMIV6N2QbNrKHG8LfPjBUJ_wLuXrpUE
+      - key: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+        value: uiu-adda-k.firebaseapp.com
+      - key: NEXT_PUBLIC_FIREBASE_DATABASE_URL
+        value: https://uiu-adda-k-default-rtdb.asia-southeast1.firebasedatabase.app
+      - key: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        value: uiu-adda-k
+      - key: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+        value: uiu-adda-k.firebasestorage.app
+      - key: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+        value: "821717072907"
+      - key: NEXT_PUBLIC_FIREBASE_APP_ID
+        value: 1:821717072907:web:0acba912d0796ee8ac9b0e
+      - key: NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
+        value: G-J600HE7B3R

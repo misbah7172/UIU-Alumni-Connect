@@ -1,38 +1,38 @@
 import { useMutation } from "@tanstack/react-query";
 import { post } from "@/lib/api";
+import { firebaseAuth, googleProvider } from "@/lib/firebase";
 import { useAuthStore } from "@/store/authStore";
+import { signInWithPopup, signOut } from "firebase/auth";
 
-export function useLogin() {
+const allowedDomain = "uiu.ac.bd";
+
+function isAllowedEmail(email: string | null) {
+  return Boolean(email?.toLowerCase().endsWith(`@${allowedDomain}`));
+}
+
+export function useGoogleLogin() {
   const { setUser, setToken, setLoading } = useAuthStore();
 
   return useMutation({
-    mutationFn: async (email: string) => {
-      const data = await post("/auth/login", { email });
+    mutationFn: async () => {
+      setLoading(true);
+      const credential = await signInWithPopup(firebaseAuth, googleProvider);
+      const email = credential.user.email;
+
+      if (!isAllowedEmail(email)) {
+        await signOut(firebaseAuth);
+        throw new Error(`Only ${allowedDomain} Google accounts are allowed.`);
+      }
+
+      const idToken = await credential.user.getIdToken();
+      const data = await post("/auth/firebase/google", { idToken });
       return data;
     },
     onSuccess: (data) => {
       setUser(data.user);
       setToken(data.token);
       localStorage.setItem("token", data.token);
-    },
-    onError: () => {
       setLoading(false);
-    }
-  });
-}
-
-export function useRegister() {
-  const { setUser, setToken, setLoading } = useAuthStore();
-
-  return useMutation({
-    mutationFn: async (data: any) => {
-      const result = await post("/auth/register", data);
-      return result;
-    },
-    onSuccess: (data) => {
-      setUser(data.user);
-      setToken(data.token);
-      localStorage.setItem("token", data.token);
     },
     onError: () => {
       setLoading(false);
@@ -43,8 +43,9 @@ export function useRegister() {
 export function useLogout() {
   const { logout } = useAuthStore();
 
-  return () => {
+  return async () => {
     localStorage.removeItem("token");
+    await signOut(firebaseAuth);
     logout();
   };
 }

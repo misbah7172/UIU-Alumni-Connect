@@ -5,50 +5,28 @@ import { useRouter } from "next/navigation";
 import { GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { useLogin, useRegister } from "@/hooks/useAuth";
+import { useGoogleLogin } from "@/hooks/useAuth";
 import { useState } from "react";
 
 export function AuthPanel({ mode }: { mode: "login" | "register" | "forgot" }) {
   const isRegister = mode === "register";
   const isForgot = mode === "forgot";
   const router = useRouter();
-  const loginMutation = useLogin();
-  const registerMutation = useRegister();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    name: "",
-    department: "",
-    role: "STUDENT"
-  });
+  const googleLogin = useGoogleLogin();
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGoogleLogin = async () => {
     setError("");
 
     try {
-      if (isRegister) {
-        await registerMutation.mutateAsync({
-          email: formData.email,
-          name: formData.name,
-          role: formData.role,
-          department: formData.department
-        });
-        router.push("/dashboard");
-      } else if (isForgot) {
-        setError("Password reset link sent to your email");
-      } else {
-        await loginMutation.mutateAsync(formData.email);
-        router.push("/dashboard");
-      }
+      await googleLogin.mutateAsync();
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err.message || "An error occurred");
     }
   };
 
-  const isLoading = loginMutation.isPending || registerMutation.isPending;
+  const isLoading = googleLogin.isPending;
 
   return (
     <main className="grid min-h-screen place-items-center bg-background px-4 py-10">
@@ -62,63 +40,26 @@ export function AuthPanel({ mode }: { mode: "login" | "register" | "forgot" }) {
           </Link>
           <div className="text-center">
             <h1 className="text-2xl font-bold">
-              {isForgot ? "Reset your password" : isRegister ? "Create your account" : "Welcome back"}
+              {isRegister ? "Create your account" : isForgot ? "Google manages your password" : "Welcome back"}
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
               {isForgot
-                ? "Enter your university email to receive a secure reset link."
-                : "Use your verified university identity to continue."}
+                ? "Use Google account recovery for your UIU email."
+                : "Continue with your Google account ending in uiu.ac.bd."}
             </p>
           </div>
-          <form className="mt-6 grid gap-4" onSubmit={handleSubmit}>
-            {isRegister ? (
-              <Input placeholder="Full name" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} autoComplete="name" />
-            ) : null}
-            <Input
-              placeholder="University email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              autoComplete="email"
-              required
-            />
-            {!isForgot && isRegister ? (
-              <select
-                className="rounded-md border border-input bg-background px-3 py-2 text-sm"
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              >
-                <option value="STUDENT">Student</option>
-                <option value="ALUMNI">Alumni</option>
-              </select>
-            ) : null}
-            {!isForgot ? (
-              <Input
-                placeholder="Password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                autoComplete={isRegister ? "new-password" : "current-password"}
-              />
-            ) : null}
-            {isRegister ? (
-              <Input
-                placeholder="Department and batch"
-                value={formData.department}
-                onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-              />
-            ) : null}
-            {error && <div className="text-sm text-red-500">{error}</div>}
-            <Button size="lg" disabled={isLoading}>
-              {isLoading ? "Loading..." : isForgot ? "Send reset link" : isRegister ? "Create account" : "Login"}
+          <div className="mt-6 grid gap-4">
+            <Button size="lg" onClick={handleGoogleLogin} disabled={isLoading}>
+              {isLoading ? "Connecting..." : "Continue with Google"}
             </Button>
-          </form>
-          <div className="mt-5 flex items-center justify-between text-sm">
-            <Link href="/forgot-password" className="text-muted-foreground hover:text-primary">
-              Forgot password?
-            </Link>
+            <p className="rounded-md border border-border bg-muted p-3 text-center text-sm text-muted-foreground">
+              Only Google accounts ending with <span className="font-semibold text-foreground">uiu.ac.bd</span> can sign in.
+            </p>
+            {error && <div className="text-sm text-red-500">{error}</div>}
+          </div>
+          <div className="mt-5 flex items-center justify-center text-sm">
             <Link href={isRegister ? "/login" : "/register"} className="font-semibold text-primary">
-              {isRegister ? "Login" : "Register"}
+              {isRegister ? "Already have access? Login" : "New here? Continue with Google"}
             </Link>
           </div>
         </CardContent>
@@ -126,4 +67,3 @@ export function AuthPanel({ mode }: { mode: "login" | "register" | "forgot" }) {
     </main>
   );
 }
-

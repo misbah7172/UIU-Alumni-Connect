@@ -87,3 +87,5 @@ Next work should connect Supabase Auth, implement Prisma services, and add real 
 The repo includes `render.yaml` for deploying the Express API and Next.js frontend together in one Render web service.
 
 See [docs/render-deployment.md](docs/render-deployment.md) for the required environment variables and health checks.
+
+Authentication uses Firebase Google sign-in only. The backend accepts only verified Google accounts whose email ends in `uiu.ac.bd`. Add Firebase Admin service-account values to Render as `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`.

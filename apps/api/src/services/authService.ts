@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { prisma } from "../config/prisma.js";
 import { env } from "../config/env.js";
+import { firebaseAdminAuth } from "../config/firebase-admin.js";
 import { HttpError } from "../utils/http-error.js";
 
 export interface AuthUser {
@@ -10,81 +11,46 @@ export interface AuthUser {
 }
 
 export class AuthService {
+  static readonly allowedEmailDomain = "uiu.ac.bd";
+
   static generateJWT(user: AuthUser): string {
     return jwt.sign(user, env.JWT_SECRET, { expiresIn: "7d" });
   }
 
-  static async register(
-    email: string,
-    password: string,
-    name: string,
-    role: "STUDENT" | "ALUMNI" | "RECRUITER" = "STUDENT",
-    department?: string,
-    batch?: string
-  ): Promise<{ user: any; token: string }> {
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-
-    if (existingUser) {
-      throw new HttpError(409, "User with this email already exists");
-    }
-
-    // Create user in database
-    const user = await prisma.user.create({
-      data: {
-        email,
-        name,
-        role,
-        department,
-        batch,
-        verified: role === "RECRUITER" ? true : false
-      }
-    });
-
-    // Create profile based on role
-    if (role === "STUDENT") {
-      await prisma.studentProfile.create({
-        data: { userId: user.id }
-      });
-    } else if (role === "ALUMNI" || role === "RECRUITER") {
-      await prisma.alumniProfile.create({
-        data: { userId: user.id }
-      });
-    }
-
-    const authUser: AuthUser = {
-      id: user.id,
-      email: user.email,
-      role: user.role
-    };
-
-    const token = this.generateJWT(authUser);
-
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-        department: user.department,
-        batch: user.batch,
-        verified: user.verified
-      },
-      token
-    };
+  static isAllowedEmail(email: string) {
+    return email.toLowerCase().endsWith(`@${this.allowedEmailDomain}`);
   }
 
-  static async login(email: string): Promise<{ user: any; token: string }> {
-    // Find user by email
-    const user = await prisma.user.findUnique({
-      where: { email }
-    });
+  static async loginWithFirebase(idToken: string): Promise<{ user: any; token: string }> {
+    const decoded = await firebaseAdminAuth.verifyIdToken(idToken);
+    const email = decoded.email?.toLowerCase();
 
-    if (!user) {
-      throw new HttpError(401, "Invalid email or user not found");
+    if (!email || !decoded.email_verified) {
+      throw new HttpError(401, "A verified Google email is required");
     }
+
+    if (!this.isAllowedEmail(email)) {
+      throw new HttpError(403, `Only ${this.allowedEmailDomain} emails are allowed`);
+    }
+
+    const user = await prisma.user.upsert({
+      where: { email },
+      create: {
+        email,
+        name: decoded.name || email.split("@")[0],
+        profileImage: decoded.picture,
+        role: "STUDENT",
+        verified: true,
+        studentProfile: {
+          create: {}
+        }
+      },
+      update: {
+        name: decoded.name || undefined,
+        profileImage: decoded.picture || undefined,
+        verified: true
+      }
+    });
 
     const authUser: AuthUser = {
       id: user.id,

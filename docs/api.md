@@ -4,11 +4,15 @@ Base URL: `http://localhost:4000/api`
 
 ## Auth
 
+- `POST /auth/firebase/google`
+
+Manual email/password auth is disabled. The frontend signs in with Firebase Google Auth, sends the Firebase ID token to `/auth/firebase/google`, and the backend verifies it with Firebase Admin before issuing the app JWT. Only verified Google emails ending in `uiu.ac.bd` are accepted.
+
+Compatibility endpoints return `410 Gone`:
+
 - `POST /auth/login`
 - `POST /auth/register`
 - `POST /auth/reset-password`
-
-These endpoints are backed by the current authentication service and can be swapped to a Supabase Auth exchange when production credentials and policies are finalized.
 
 ## Users
 
