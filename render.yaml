@@ -3,7 +3,7 @@ services:
     name: uiu-alumni-connect
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build:render
+    buildCommand: npm ci --include=dev && npm run build:render
     startCommand: npm run start:render
     healthCheckPath: /health
     autoDeploy: true

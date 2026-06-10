@@ -16,7 +16,7 @@ Create one Render Web Service from the repository root, or use the root-level `r
 Name: uiu-alumni-connect
 Runtime: Node
 Root Directory: leave blank
-Build Command: npm ci && npm run build:render
+Build Command: npm ci --include=dev && npm run build:render
 Start Command: npm run start:render
 Health Check Path: /health
 ```
