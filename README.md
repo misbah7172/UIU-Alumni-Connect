@@ -84,6 +84,6 @@ Next work should connect Supabase Auth, implement Prisma services, and add real 
 
 ## Render Hosting
 
-The repo includes `render.yaml` for deploying both the Express API and Next.js frontend on Render.
+The repo includes `render.yaml` for deploying the Express API and Next.js frontend together in one Render web service.
 
 See [docs/render-deployment.md](docs/render-deployment.md) for the required environment variables and health checks.
