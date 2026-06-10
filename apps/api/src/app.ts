@@ -11,7 +11,11 @@ import { apiRouter } from "./routes/index.js";
 export function createApp() {
   const app = express();
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: false
+    })
+  );
   app.use(cors({ origin: env.WEB_ORIGIN, credentials: true }));
   app.use(express.json({ limit: "1mb" }));
   app.use(morgan("dev"));
