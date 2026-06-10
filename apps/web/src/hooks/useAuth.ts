@@ -7,7 +7,7 @@ import { signInWithPopup, signOut } from "firebase/auth";
 const allowedDomain = "uiu.ac.bd";
 
 function isAllowedEmail(email: string | null) {
-  return Boolean(email?.toLowerCase().endsWith(`@${allowedDomain}`));
+  return Boolean(email?.toLowerCase().endsWith(`.${allowedDomain}`));
 }
 
 export function useGoogleLogin() {
@@ -21,7 +21,7 @@ export function useGoogleLogin() {
 
       if (!isAllowedEmail(email)) {
         await signOut(firebaseAuth);
-        throw new Error(`Only ${allowedDomain} Google accounts are allowed.`);
+        throw new Error(`Only Google accounts ending with .${allowedDomain} are allowed.`);
       }
 
       const idToken = await credential.user.getIdToken();

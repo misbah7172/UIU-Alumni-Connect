@@ -6,7 +6,7 @@ Base URL: `http://localhost:4000/api`
 
 - `POST /auth/firebase/google`
 
-Manual email/password auth is disabled. The frontend signs in with Firebase Google Auth, sends the Firebase ID token to `/auth/firebase/google`, and the backend verifies it with Firebase Admin before issuing the app JWT. Only verified Google emails ending in `uiu.ac.bd` are accepted.
+Manual email/password auth is disabled. The frontend signs in with Firebase Google Auth, sends the Firebase ID token to `/auth/firebase/google`, and the backend verifies it with Firebase Admin before issuing the app JWT. Only verified Google emails ending in `.uiu.ac.bd` are accepted.
 
 Compatibility endpoints return `410 Gone`:
 

@@ -45,7 +45,7 @@ export function AuthPanel({ mode }: { mode: "login" | "register" | "forgot" }) {
             <p className="mt-2 text-sm text-muted-foreground">
               {isForgot
                 ? "Use Google account recovery for your UIU email."
-                : "Continue with your Google account ending in uiu.ac.bd."}
+                : "Continue with your Google account ending in .uiu.ac.bd."}
             </p>
           </div>
           <div className="mt-6 grid gap-4">
@@ -53,7 +53,7 @@ export function AuthPanel({ mode }: { mode: "login" | "register" | "forgot" }) {
               {isLoading ? "Connecting..." : "Continue with Google"}
             </Button>
             <p className="rounded-md border border-border bg-muted p-3 text-center text-sm text-muted-foreground">
-              Only Google accounts ending with <span className="font-semibold text-foreground">uiu.ac.bd</span> can sign in.
+              Only Google accounts ending with <span className="font-semibold text-foreground">.uiu.ac.bd</span> can sign in.
             </p>
             {error && <div className="text-sm text-red-500">{error}</div>}
           </div>

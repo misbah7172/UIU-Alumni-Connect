@@ -18,7 +18,7 @@ export class AuthService {
   }
 
   static isAllowedEmail(email: string) {
-    return email.toLowerCase().endsWith(`@${this.allowedEmailDomain}`);
+    return email.toLowerCase().endsWith(`.${this.allowedEmailDomain}`);
   }
 
   static async loginWithFirebase(idToken: string): Promise<{ user: any; token: string }> {
@@ -30,7 +30,7 @@ export class AuthService {
     }
 
     if (!this.isAllowedEmail(email)) {
-      throw new HttpError(403, `Only ${this.allowedEmailDomain} emails are allowed`);
+      throw new HttpError(403, `Only emails ending with .${this.allowedEmailDomain} are allowed`);
     }
 
     const user = await prisma.user.upsert({

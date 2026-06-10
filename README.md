@@ -88,4 +88,4 @@ The repo includes `render.yaml` for deploying the Express API and Next.js fronte
 
 See [docs/render-deployment.md](docs/render-deployment.md) for the required environment variables and health checks.
 
-Authentication uses Firebase Google sign-in only. The backend accepts only verified Google accounts whose email ends in `uiu.ac.bd`. Add Firebase Admin service-account values to Render as `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`.
+Authentication uses Firebase Google sign-in only. The backend accepts only verified Google accounts whose email ends in `.uiu.ac.bd`, such as `name@bscse.uiu.ac.bd`. Add Firebase Admin service-account values to Render as `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, and `FIREBASE_PRIVATE_KEY`.
