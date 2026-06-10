@@ -2,6 +2,7 @@ import "./load-env.js";
 import { z } from "zod";
 
 const envSchema = z.object({
+  PORT: z.coerce.number().optional(),
   API_PORT: z.coerce.number().default(4000),
   DATABASE_URL: z.string().min(1),
   SUPABASE_URL: z.string().url(),
@@ -12,3 +13,5 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse(process.env);
+
+export const apiPort = env.PORT ?? env.API_PORT;

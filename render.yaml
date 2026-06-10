@@ -1,0 +1,44 @@
+services:
+  - type: web
+    name: uiu-alumni-connect-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npx prisma generate && npm run build:api
+    startCommand: npm run start:api
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: WEB_ORIGIN
+        value: https://uiu-alumni-connect-web.onrender.com
+
+  - type: web
+    name: uiu-alumni-connect-web
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build:web
+    startCommand: npm --workspace @uiu-alumni/web run start -- -H 0.0.0.0 -p $PORT
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://uiu-alumni-connect-api.onrender.com/api
+      - key: NEXT_PUBLIC_SUPABASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_SUPABASE_ANON_KEY
+        sync: false

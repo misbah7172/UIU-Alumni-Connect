@@ -1,8 +1,8 @@
 import { createApp } from "./app.js";
-import { env } from "./config/env.js";
+import { apiPort } from "./config/env.js";
 
 const app = createApp();
 
-app.listen(env.API_PORT, () => {
-  console.log(`UIU Alumni Connect API listening on http://localhost:${env.API_PORT}`);
+app.listen(apiPort, () => {
+  console.log(`UIU Alumni Connect API listening on port ${apiPort}`);
 });

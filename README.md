@@ -81,3 +81,9 @@ This first implementation creates the production-oriented foundation:
 - Prisma schema covering the core product model.
 
 Next work should connect Supabase Auth, implement Prisma services, and add real data fetching with TanStack Query.
+
+## Render Hosting
+
+The repo includes `render.yaml` for deploying both the Express API and Next.js frontend on Render.
+
+See [docs/render-deployment.md](docs/render-deployment.md) for the required environment variables and health checks.
